@@ -1,0 +1,143 @@
+<!doctype html>
+<html lang="es-MX">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+  <meta name="theme-color" content="#753c28" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+  <meta name="description" content="CinnamonShofis: administra tu menú, inventario, pedidos y ventas desde tu computadora o celular." />
+  <title>CinnamonShofis | Repostería</title>
+  <link rel="icon" href="favicon.svg" type="image/svg+xml" />
+  <link rel="apple-touch-icon" href="icon-192.png" />
+  <link rel="manifest" href="manifest.webmanifest" />
+  <link rel="stylesheet" href="styles.css" />
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <section id="authScreen" class="auth-screen" aria-label="Acceso a CinnamonShofis">
+    <div class="auth-card">
+      <div class="auth-monogram" aria-hidden="true">CS</div>
+      <p class="small-eyebrow">CINNAMONSHOFIS · ADMINISTRACIÓN</p>
+      <h1 id="authTitle">Inicia sesión</h1>
+      <p class="auth-description">Tu inventario, menú y pedidos en la nube, en PC y celular.</p>
+      <form id="loginForm" class="auth-form">
+        <label>Correo electrónico<input id="authEmail" type="email" autocomplete="username" class="form-control" required placeholder="correo@ejemplo.com" /></label>
+        <label>Contraseña<input id="authPassword" type="password" autocomplete="current-password" class="form-control" required minlength="6" placeholder="Mínimo 6 caracteres" /></label>
+        <button id="authSubmit" class="button button-primary button-full" type="submit">Entrar a CinnamonShofis</button>
+      </form>
+      <p id="authMessage" class="auth-message" role="status" aria-live="polite" hidden></p>
+      <button type="button" id="authLogoutBtn" class="auth-reset" hidden>Cambiar de cuenta</button>
+      <button type="button" id="authSwitch" class="auth-switch">Crear una cuenta</button><button type="button" id="resetPasswordBtn" class="auth-reset">Olvidé mi contraseña</button>
+      <p class="auth-footnote">Los datos son privados y se sincronizan al iniciar sesión con la misma cuenta.</p>
+    </div>
+  </section>
+  <div id="appShell" class="app-shell" hidden>
+    <aside class="sidebar" aria-label="Navegación principal">
+      <div class="brand sidebar-brand">
+        <span class="brand-mark" aria-hidden="true">✳</span>
+        <span class="brand-copy"><strong>Cinnamon<span>Shofis</span></strong><small>REPOSTERÍA ARTESANAL</small></span>
+      </div>
+      <div class="sidebar-group-label">TU ESPACIO DE TRABAJO</div>
+      <nav class="main-nav" aria-label="Secciones">
+        <button class="nav-link active" data-nav="dashboard" type="button"><span class="nav-icon">▦</span> Resumen</button>
+        <button class="nav-link" data-nav="orders" type="button"><span class="nav-icon">♧</span> Nuevo pedido <span class="nav-pill" id="cartNavCount" hidden>0</span></button>
+        <button class="nav-link" data-nav="inventory" type="button"><span class="nav-icon">▤</span> Inventario</button>
+        <button class="nav-link" data-nav="menu" type="button"><span class="nav-icon">◈</span> Menú</button>
+        <button class="nav-link" data-nav="history" type="button"><span class="nav-icon">◷</span> Historial</button>
+      </nav>
+      <div class="sidebar-bottom">
+        <div class="sidebar-help"><span class="sidebar-help-icon">♡</span><strong>Hecho para tus dulces ideas</strong><p>Todo tu negocio, más organizado.</p></div>
+        <div class="local-note"><span class="online-dot"></span> <span id="sidebarSync">Conectando…</span></div>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="mobile-brand-header">
+        <div class="brand"><span class="brand-mark" aria-hidden="true">✳</span><span class="brand-copy"><strong>Cinnamon<span>Shofis</span></strong><small>REPOSTERÍA ARTESANAL</small></span></div>
+      </header>
+      <nav class="mobile-nav" aria-label="Secciones móvil">
+        <button class="mobile-nav-link active" data-nav="dashboard" type="button">Resumen</button>
+        <button class="mobile-nav-link" data-nav="orders" type="button">Pedidos</button>
+        <button class="mobile-nav-link" data-nav="inventory" type="button">Inventario</button>
+        <button class="mobile-nav-link" data-nav="menu" type="button">Menú</button>
+        <button class="mobile-nav-link" data-nav="history" type="button">Historial</button>
+      </nav>
+      <main class="main-content">
+        <header class="page-topbar">
+          <div><p class="eyebrow" id="pageEyebrow">MI REPOSTERÍA / INICIO</p><h1 id="pageTitle">¡Hola, CinnamonShofis! <span class="heading-sparkle">✷</span></h1><p class="page-date" id="todayDate"></p></div>
+          <div class="topbar-actions"><button class="button button-ghost" id="exportBtn" type="button"><span aria-hidden="true">↧</span> <span class="desktop-word">Respaldo</span></button><button class="button button-primary" data-action="add-product" type="button"><span aria-hidden="true">＋</span> Agregar producto</button></div>
+        </header>
+        <div class="cloud-toolbar"><span class="cloud-state"><span class="online-dot"></span><span id="syncState">Conectando…</span></span><span id="userEmail" class="cloud-email"></span><button class="footer-link" id="logoutBtn" type="button">Cerrar sesión</button></div>
+
+        <section class="page active" data-page="dashboard" aria-label="Resumen">
+          <div class="hero-banner">
+            <div class="hero-copy"><span class="hero-kicker">✦ TU NEGOCIO EN UN SOLO LUGAR</span><h2>Un dulce negocio<br /><em>bien organizado.</em></h2><p>Controla tus roles, prepara pedidos y mantén cada venta al día.</p><button class="button button-cream" data-go="orders" type="button">Crear nuevo pedido <span aria-hidden="true">↗</span></button></div>
+            <div class="hero-art" aria-hidden="true"><div class="art-circle art-circle-one"></div><div class="art-circle art-circle-two"></div><div class="cinnamon-roll"><div class="roll-icing"></div><div class="roll-swirl"></div></div><span class="art-star star-one">✳</span><span class="art-star star-two">✦</span></div>
+          </div>
+          <div class="section-title-row"><div><span class="small-eyebrow">EL NEGOCIO DE HOY</span><h2>Todo de un vistazo</h2></div><span class="muted-small" id="dashboardDate"></span></div>
+          <div class="stats-grid">
+            <div class="stat-card"><div class="stat-top"><span>Ventas de hoy</span><span class="stat-icon stat-icon-rose">$</span></div><strong id="statSales">$0.00</strong><small>Pedidos completados hoy</small></div>
+            <div class="stat-card"><div class="stat-top"><span>Pedidos de hoy</span><span class="stat-icon stat-icon-yellow">▤</span></div><strong id="statOrders">0</strong><small>Ventas registradas</small></div>
+            <div class="stat-card"><div class="stat-top"><span>Unidades en stock</span><span class="stat-icon stat-icon-peach">◈</span></div><strong id="statStock">0</strong><small>En todos tus productos</small></div>
+            <div class="stat-card"><div class="stat-top"><span>Stock por revisar</span><span class="stat-icon stat-icon-red">!</span></div><strong id="statLow">0</strong><small>Agotados o bajo el mínimo</small></div>
+          </div>
+          <div class="dashboard-grid">
+            <div class="panel"><div class="panel-heading"><div><h3>Últimos pedidos</h3><p>Tus ventas más recientes</p></div><button class="text-link" type="button" data-go="history">Ver todos ↗</button></div><div id="recentOrders"></div></div>
+            <div class="panel"><div class="panel-heading"><div><h3>Existencias por revisar</h3><p>Para que nunca falte un rol</p></div><button class="text-link" type="button" data-go="inventory">Ver inventario ↗</button></div><div id="lowStockItems"></div></div>
+          </div>
+        </section>
+
+        <section class="page" data-page="orders" aria-label="Nuevo pedido" hidden>
+          <div class="section-intro"><div><span class="small-eyebrow">PASO 1 · ELIGE TUS DELICIAS</span><h2>Prepara un pedido <span class="heading-sparkle">✳</span></h2><p>Agrega productos y cantidades. El total se calcula automáticamente.</p></div><div class="pill-indicator" id="availableProductsCount">0 productos disponibles</div></div>
+          <div class="order-layout">
+            <div class="order-catalog panel"><div class="catalog-top"><label class="search-field"><span aria-hidden="true">⌕</span><input id="orderSearch" type="search" placeholder="Buscar roles o productos..." autocomplete="off" aria-label="Buscar producto para pedido" /></label><span class="subtle-caption">Toca un producto para agregarlo</span></div><div class="picker-grid" id="productPicker"></div></div>
+            <div class="checkout panel"><div class="checkout-heading"><div><span class="small-eyebrow">PASO 2 · TU CUENTA</span><h3>Detalle del pedido</h3></div><span class="cart-count" id="cartItemsBadge">0</span></div><div class="cart-items" id="cartItems"></div>
+              <div class="checkout-fields"><label class="field-label" for="customerName">Nombre del cliente <span>(opcional)</span></label><input id="customerName" class="form-control" placeholder="Ej. Sofía" maxlength="80" />
+                <div class="field-pair"><label><span class="field-label">Descuento ($)</span><input id="discountInput" class="form-control" type="number" min="0" step="0.01" value="0" inputmode="decimal" /></label><label><span class="field-label">Envío ($)</span><input id="shippingInput" class="form-control" type="number" min="0" step="0.01" value="0" inputmode="decimal" /></label></div>
+                <label class="field-label" for="paymentMethod">Forma de pago</label><select class="form-control" id="paymentMethod"><option value="Efectivo">Efectivo</option><option value="Transferencia">Transferencia</option><option value="Tarjeta">Tarjeta</option><option value="Otro">Otro</option></select>
+                <label id="cashReceivedField"><span class="field-label">Efectivo recibido ($) <span>(opcional)</span></span><input id="cashReceived" class="form-control" type="number" min="0" step="0.01" placeholder="¿Con cuánto paga?" inputmode="decimal" /></label>
+                <label class="field-label" for="orderNotes">Notas <span>(opcional)</span></label><textarea id="orderNotes" class="form-control" rows="2" maxlength="300" placeholder="Ej. Sin nuez, recoger a las 5..."></textarea>
+              </div>
+              <div class="totals"><div><span>Subtotal</span><strong id="subtotalValue">$0.00</strong></div><div><span>Descuento</span><strong id="discountValue">-$0.00</strong></div><div><span>Envío</span><strong id="shippingValue">$0.00</strong></div><div class="total-main"><span>Total del pedido</span><strong id="totalValue">$0.00</strong></div><div class="change-row" id="changeRow" hidden><span id="changeLabel">Cambio</span><strong id="changeValue">$0.00</strong></div></div>
+              <button class="button button-primary button-full" type="button" id="completeOrderBtn">Confirmar pedido <span aria-hidden="true">↗</span></button><p class="checkout-footnote">Al confirmar, se descuenta la cantidad del inventario.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="page" data-page="inventory" aria-label="Inventario" hidden>
+          <div class="section-intro"><div><span class="small-eyebrow">CONTROL DE EXISTENCIAS</span><h2>Tu inventario</h2><p>Agrega productos, actualiza cantidades y controla qué aparece en el menú.</p></div><button class="button button-primary" data-action="add-product" type="button">＋ Nuevo producto</button></div>
+          <div class="panel inventory-panel"><div class="inventory-toolbar"><label class="search-field"><span aria-hidden="true">⌕</span><input id="inventorySearch" type="search" placeholder="Buscar productos..." aria-label="Buscar inventario" autocomplete="off" /></label><select id="inventoryFilter" class="filter-select" aria-label="Filtrar inventario"><option value="all">Todos</option><option value="low">Stock bajo</option><option value="out">Agotados</option><option value="inMenu">En el menú</option><option value="hidden">Fuera del menú</option><option value="archived">Archivados</option></select></div><div class="inventory-table-wrapper"><table class="inventory-table"><thead><tr><th>Producto</th><th>Precio</th><th>Existencia</th><th>Estado</th><th>Menú</th><th class="align-right">Acciones</th></tr></thead><tbody id="inventoryTableBody"></tbody></table></div><div class="inventory-mobile" id="inventoryMobile"></div><p class="inventory-footer" id="inventorySummary"></p></div>
+        </section>
+
+        <section class="page" data-page="menu" aria-label="Menú" hidden>
+          <div class="section-intro"><div><span class="small-eyebrow">LO QUE OFRECES</span><h2>Nuestro dulce menú</h2><p>Los productos marcados como visibles aparecen aquí, incluso si se agotan.</p></div><button class="button button-outline" type="button" id="printMenuBtn">↥ Imprimir menú</button></div>
+          <div class="menu-cover"><span>✳ CINNAMONSHOFIS ✳</span><h3>Hecho con amor,<br /><em>servido con canela.</em></h3><p>Repostería artesanal · Precios en pesos mexicanos</p></div><div class="menu-grid" id="menuGrid"></div>
+        </section>
+
+        <section class="page" data-page="history" aria-label="Historial de pedidos" hidden>
+          <div class="section-intro"><div><span class="small-eyebrow">TUS VENTAS GUARDADAS</span><h2>Historial de pedidos</h2><p>Consulta tickets anteriores y cancela con reposición de inventario.</p></div><div class="pill-indicator" id="historyCount">0 pedidos</div></div>
+          <div class="panel history-panel"><div class="history-overview"><div><span>Ventas acumuladas</span><strong id="allTimeSales">$0.00</strong></div><div><span>Pedidos completados</span><strong id="allTimeOrders">0</strong></div></div><div id="historyList"></div></div>
+        </section>
+
+        <footer class="app-footer"><span>© <span id="footerYear"></span> CinnamonShofis · Cada rol cuenta ♡</span><span><button type="button" class="footer-link" id="importBtn">Importar respaldo</button><span class="footer-sep">·</span> Datos privados y sincronizados con Firebase</span></footer>
+      </main>
+    </div>
+  </div>
+
+  <dialog id="productDialog" class="product-dialog" aria-labelledby="productDialogTitle">
+    <form id="productForm" novalidate>
+      <div class="dialog-top"><div><span class="small-eyebrow">CATÁLOGO · INVENTARIO</span><h2 id="productDialogTitle">Nuevo producto</h2><p>Los cambios se guardan y sincronizan en la nube.</p></div><button class="icon-button" id="closeDialogBtn" type="button" aria-label="Cerrar">×</button></div>
+      <div class="dialog-form"><div class="field-pair"><label><span class="field-label">Nombre del producto *</span><input class="form-control" id="productName" name="name" maxlength="70" placeholder="Ej. Rol de canela clásico" required /></label><label><span class="field-label">Categoría</span><select class="form-control" id="productCategory" name="category"><option value="Roles de canela">Roles de canela</option><option value="Postres">Postres</option><option value="Bebidas">Bebidas</option><option value="Otros">Otros</option></select></label></div>
+        <div class="field-pair"><label><span class="field-label">Precio de venta ($) *</span><input class="form-control" id="productPrice" name="price" type="number" min="0" max="9999999" step="0.01" placeholder="0.00" inputmode="decimal" required /></label><label><span class="field-label">Costo por unidad ($) <span>(opcional)</span></span><input class="form-control" id="productCost" name="cost" type="number" min="0" max="9999999" step="0.01" placeholder="0.00" inputmode="decimal" /></label></div>
+        <div class="field-pair"><label><span class="field-label">Unidades disponibles *</span><input class="form-control" id="productStock" name="stock" type="number" min="0" max="9999999" step="1" placeholder="0" inputmode="numeric" required /></label><label><span class="field-label">Alerta cuando queden *</span><input class="form-control" id="productMinimum" name="minimum" type="number" min="0" max="9999999" step="1" value="5" inputmode="numeric" required /></label></div>
+        <div class="visible-toggle"><label for="productInMenu" class="toggle-row"><input type="checkbox" id="productInMenu" name="inMenu" checked /><span class="toggle-ui"></span><span><strong>Mostrar en el menú</strong><small>También disponible para pedidos</small></span></label></div>
+        <p class="form-error" id="productError" role="alert" hidden></p>
+      </div>
+      <div class="dialog-actions"><button class="button button-outline" id="cancelDialogBtn" type="button">Cancelar</button><button class="button button-primary" type="submit" id="saveProductBtn">Guardar producto</button></div>
+    </form>
+  </dialog>
+  <input type="file" id="importFile" accept=".json,application/json" hidden />
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+</body>
+</html>
